@@ -27,7 +27,7 @@ function Input({ children, variant = 'primary' }: InputProps) {
 function Field({ ...props }: TextInputProps) {
   return (
     <TextInput
-      className='text-zinc-100 text-lg font-regular'
+      className='flex-1 text-zinc-100 text-lg font-regular'
       {...props}
       placeholderTextColor={colors.zinc[400]}
       cursorColor={colors.zinc[100]}

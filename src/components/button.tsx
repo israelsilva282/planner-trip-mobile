@@ -1,5 +1,8 @@
 import clsx from 'clsx';
+import { createContext, useContext } from 'react';
+
 import {
+  ActivityIndicator,
   Text,
   TextProps,
   TouchableOpacity,
@@ -13,29 +16,53 @@ type ButtonProps = TouchableOpacityProps & {
   isLoading?: boolean;
 };
 
+const ThemeContext = createContext<{ variant?: Variants }>({});
+
 function Button({
   variant = 'primary',
-  isLoading,
   children,
+  isLoading,
   ...props
 }: ButtonProps) {
   return (
     <TouchableOpacity
-      className={clsx(
-        'w-full h-11 flex-row items-center justify-center rounded-lg gap-2',
+      style={[
         {
-          'bg-lime-300': variant === 'primary',
-          'bg-zinc-800': variant === 'secondary',
-        }
-      )}
+          width: '100%',
+          height: 44,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 8,
+          gap: 2,
+        },
+        variant === 'primary' ? { backgroundColor: '#bef264' } : {},
+        variant === 'secondary' ? { backgroundColor: '#27272a' } : {},
+      ]}
       disabled={isLoading}
+      activeOpacity={0.7}
       {...props}
-    ></TouchableOpacity>
+    >
+      <ThemeContext.Provider value={{ variant }}>
+        {isLoading ? <ActivityIndicator className='text-lime-950' /> : children}
+      </ThemeContext.Provider>
+    </TouchableOpacity>
   );
 }
 
 function Title({ children }: TextProps) {
-  return <Text className='text-white'>{children}</Text>;
+  const { variant } = useContext(ThemeContext);
+
+  return (
+    <Text
+      className={clsx('text-base, font-semibold', {
+        'text-lime-950': variant === 'primary',
+        'text-zinc-200': variant === 'secondary',
+      })}
+    >
+      {children}
+    </Text>
+  );
 }
 
 Button.Title = Title;
